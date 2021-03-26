@@ -66,35 +66,35 @@ def setup_loggers():
 setup_loggers()
 
 def list_generate_primes_array(a,b):
-#    logger.info("starting generating primes from {} to {}".format(a,b))
-#    logger.info("\tusing primesieve list prime generation")
+    logger.info("starting generating primes from {} to {}".format(a,b))
+    logger.info("\tusing primesieve list prime generation")
     a = primesieve.primes(a,b)
-#    logger.info("\tprimes generated")
+    logger.info("\tprimes generated")
     a = np.array(a,dtype=np.uint64)
-#    logger.info("\toutput array created")
-#    logger.info("done generating primes")
+    logger.info("\toutput array created")
+    logger.info("done generating primes")
     return a
 
 def numpy_generate_primes_array(a,b):
-#    logger.info("starting generating primes from {} to {}".format(a,b))
-#    logger.info("\tusing numpy prime generator")
+    logger.info("starting generating primes from {} to {}".format(a,b))
+    logger.info("\tusing numpy prime generator")
     import primesieve.numpy
     a = primesieve.numpy.primes(a,b)
     a = a.astype(np.uint64)
-#    logger.info("done generating primes")
+    logger.info("done generating primes")
     return a
 
 def get_primes_generator():
-#    logger.info("selecting primes generation function")
+    logger.info("selecting primes generation function")
     func = None
     if _HAS_PRIMESIEVE_NUMPY:
-#    #    logger.info("\tusing numpy prime generation...")
+        logger.info("\tusing numpy prime generation...")
         func = numpy_generate_primes_array
     else:
-#    #    logger.info("\tfalling back to list primesieve prime generation")
+        logger.info("\tfalling back to list primesieve prime generation")
         func = list_generate_primes_array
 
-#    logger.info("prime generator selected")
+    logger.info("prime generator selected")
     return func
 
 
@@ -105,27 +105,27 @@ def _compute_spins(primes, last_prime, last_spin):
     SPINS[0] = 0, use that zero element to thread chunked computations together.
     """
     
-#    logger.info("compute_spins: generating mod6Values")
+    logger.info("compute_spins: generating mod6Values")
     m6val  = primes % 6
     m6_offset_sum     = np.empty_like(primes, dtype=np.int32)
     m6_offset_sum[0]  = m6val[0] + (last_prime % 6)            #  seed value from current val + prev m6val
     m6_offset_sum[1:] = m6val[1:] + m6val[:-1]                 #  cur m6val + prev m6val
-#    logger.info("compute_spins: done mod6Values")
-#    logger.info("compute_spins: m6_off_sum={}".format(m6_offset_sum))
+    logger.info("compute_spins: done mod6Values")
+    logger.info("compute_spins: m6_off_sum={}".format(m6_offset_sum))
 
-#    logger.info("compute_spins: starting to compute spins")
+    logger.info("compute_spins: starting to compute spins")
 
     z = np.zeros_like(primes, dtype=np.int32)
     z[ m6_offset_sum ==  6] =  1
     z[ m6_offset_sum == 10] = -1
     z[ m6_offset_sum ==  2] = -1
-#    logger.info("compute_spins: z before last_spin={}".format(z))
+    logger.info("compute_spins: z before last_spin={}".format(z))
     z[0] *= last_spin
-#    logger.info("compute_spins: z={}".format(z))
+    logger.info("compute_spins: z={}".format(z))
     spin = np.cumprod(z)
 
-#    logger.info("compute_spins: spin={}".format(spin))
-#    logger.info("compute_spins: done computing spins")
+    logger.info("compute_spins: spin={}".format(spin))
+    logger.info("compute_spins: done computing spins")
     return spin
 
 def _compute_positions(spin, seed_pos, seed_spin):
@@ -133,33 +133,33 @@ def _compute_positions(spin, seed_pos, seed_spin):
 
     """
 
-#    logger.info("compute_positions: starting aux calculations")
+    logger.info("compute_positions: starting aux calculations")
     delta = np.zeros_like(spin)
     delta[0]  = spin[0] - seed_spin      # first delta is cur_spin - prev_spin from seed_spin
     delta[1:] = spin[1:] - spin[:-1]     # delta is cur_spin - prev_spin 
-#    logger.info("compute_positions: delta={}".format(delta))
+    logger.info("compute_positions: delta={}".format(delta))
 
     #increments = np.copy(spin)           # copy the spin array,
     increments = np.abs(spin)           # copy the spin array,
     increments[ delta != 0 ] = 0          # set any non-zero delta to zero in the increment array
-#    logger.info("compute_positions: increments={}".format(increments))
+    logger.info("compute_positions: increments={}".format(increments))
 
-#    logger.info("compute_positions:\tdone with aux calculations")
+    logger.info("compute_positions:\tdone with aux calculations")
     
-#    logger.info("compute_positions: starting primary calculation")
+    logger.info("compute_positions: starting primary calculation")
 
     # start at seed, cumulative add
     positions = np.copy(increments)
     #increments[0] = seed_pos
     outpositions = (seed_pos + np.cumsum(increments)) % 6
-#    logger.info("compute_positions: outpositions={}".format(outpositions))
-#    logger.info("compute_positions:\tdone with primary calculation")
+    logger.info("compute_positions: outpositions={}".format(outpositions))
+    logger.info("compute_positions:\tdone with primary calculation")
     return outpositions
 
 
 def _compute_rotations(positions, pos_seed, rot_seed ):
 
-#    logger.info("compute_rotations: starting aux calculations")
+    logger.info("compute_rotations: starting aux calculations")
     #logger.info("positions array {}".format(positions))
     #logger.debug("rot_seed = {}".format(rot_seed))
     #logger.debug("pos_seed = {}".format(pos_seed))
@@ -173,13 +173,13 @@ def _compute_rotations(positions, pos_seed, rot_seed ):
     z[ delta == -5 ] =  1          # where delta = -5, set increment to 1
     z[ delta ==  5 ] = -1          # where delta is 5, set increment to -1
 
-#    logger.info("compute_rotations: done with aux calculations")
+    logger.info("compute_rotations: done with aux calculations")
 
-#    logger.info("compute_rotations: starting primary calculations")
+    logger.info("compute_rotations: starting primary calculations")
     z[0] += rot_seed
     r = np.cumsum( z )
     
-#    logger.info("compute_rotations: done with primary calculations")
+    logger.info("compute_rotations: done with primary calculations")
 
     return r
 
@@ -202,7 +202,7 @@ if _HAS_CYTHON_PRIMEHEX:
     
 ## TODO: figure if we can generalize/refactor these array savers methods
 def save_text_arrays( filename, data, save_opts):
-#    logger.info("start saving text results to file {0}".format(filename))
+    logger.info("start saving text results to file {0}".format(filename))
 
     skip_interval = save_opts.get('skip_interval',1)
     if skip_interval == 0:
@@ -210,9 +210,9 @@ def save_text_arrays( filename, data, save_opts):
     else:
         s = slice(None, None, skip_interval)
 
-#    logger.info("start zipping and slicing data together")
+    logger.info("start zipping and slicing data together")
     outdata    = zipper(data.prime[s], data.pos[s], data.spin[s], data.rot[s])
-#    logger.info("\tdone zipping and slicing data")
+    logger.info("\tdone zipping and slicing data")
 
     with open(filename, "w") as fp:
         w = fp.write
@@ -223,7 +223,7 @@ def save_text_arrays( filename, data, save_opts):
             line = sep.join(map(str,d))
             w(line)
             w(newline)
-#    logger.info("done saving text file")
+    logger.info("done saving text file")
     
 def save_binary_arrays( filename, data, save_opts):
 
@@ -240,28 +240,28 @@ def save_binary_arrays( filename, data, save_opts):
     else:
         (saver, msg) = (np.savez,"uncompressed")
         
-#    logger.info("start save binary arrays {} to file {} with slice {}".format(msg, filename, s))
+    logger.info("start save binary arrays {} to file {} with slice {}".format(msg, filename, s))
     saver(filename, prime=data.prime[s], spin=data.spin[s], pos=data.pos[s], rot=data.rot[s])
-#    logger.info("\tdone save binary arrays")
+    logger.info("\tdone save binary arrays")
 
 
 def compute_hex_positions(start, end, boundary_vals, save_opts):
 
-#    logger.info("save_opts is {}".format(save_opts))
-#    logger.info("boundary values are {}".format(boundary_vals))
+    logger.info("save_opts is {}".format(save_opts))
+    logger.info("boundary values are {}".format(boundary_vals))
 
     engine_name = save_opts.get('engine')
     engine = _engines.get(engine_name)
     if engine is None:
         raise ValueError("No hex position engine available for engine_name {}".format(engine_name))
 
-#    logger.info("using {} engine for computing hex positions".format(engine_name))
+    logger.info("using {} engine for computing hex positions".format(engine_name))
 
     if engine.generate_primes is None:
         engine.generate_primes = get_primes_generator()
         
     primes = engine.generate_primes(start, end)
-#    logger.info("type of primes array: {}".format(primes.dtype))
+    logger.info("type of primes array: {}".format(primes.dtype))
     
     # 2 and 3 are special, don't use them (they are the first two values, slice them out)
     if start < 2:
@@ -284,7 +284,7 @@ def _require_infile(infile):
 _VERBOSE = 5
 def dprint(level, *args):
     if _VERBOSE >= level:
-#    #    logger.info(*args)
+        logger.info(*args)
 
 _HEX_FILENAME_RE = re.compile(r"-(?P<start>\d+)-(?P<end>\d+)(-(?P<skip>\d+))?.(?P<ext>(npz|txt))")
         
@@ -415,26 +415,26 @@ class HexDataAssets:
     def compute_initial_chunks(self, nvalues, nchunks, save_opts):
         linkedValues = HexValues(1,1,1,0) # magic starting "previous" values
         hfile = compute_hex_positions(0, nvalues, linkedValues, save_opts)
-#    #    logger.info("save info: {}".format(save_opts))
+        logger.info("save info: {}".format(save_opts))
         self.compute_next_chunks(hfile, nvalues, nchunks - 1, save_opts)
 
     def compute_provisional_chunks(self, start_value, nvalues, nchunks, save_opts):
-#    #    logger.info("computing provisional chunks, starting from {}".format(start_value))
+        logger.info("computing provisional chunks, starting from {}".format(start_value))
         next_prime = primesieve.generate_n_primes(1, start_value)
-#    #    logger.info("next_prime for start_value={} is {}".format(start_value, next_prime))
+        logger.info("next_prime for start_value={} is {}".format(start_value, next_prime))
         m6_start = next_prime[0] % 6
-#    #    logger.info("m6_start is {}".format(m6_start))
+        logger.info("m6_start is {}".format(m6_start))
         if (m6_start == 1):
-#    #    #    logger.info("m6_start is {}, so using start_pos = 0".format(m6_start))
+            logger.info("m6_start is {}, so using start_pos = 0".format(m6_start))
             prime_start_pos = 0
         else:
-#    #    #    logger.info("m6_start is {}, so using start_pos = 5".format(m6_start))
+            logger.info("m6_start is {}, so using start_pos = 5".format(m6_start))
             prime_start_pos = 5
 
         linkedValues = HexValues(1, prime_start_pos, 1, 0) # magic starting "previous" values
         end_value = start_value + nvalues
         hfile = compute_hex_positions(start_value, end_value, linkedValues, save_opts)
-#    #    logger.info("save info: {}".format(save_opts))
+        logger.info("save info: {}".format(save_opts))
         self.compute_next_chunks(hfile, nvalues, nchunks - 1, save_opts)
 
 class HexValues(namedtuple('HexValues', 'prime pos spin rot')):
@@ -505,7 +505,7 @@ class HexDataFile:
         startval = long(groups['start'])
         endval   = long(groups['end'])
         skip     = long(groups['skip'])
-#    #    logger.info("found values from filename {} = {},{},{}".format(filename,startval,endval,skip))
+        logger.info("found values from filename {} = {},{},{}".format(filename,startval,endval,skip))
         return (startval, endval, skip)
 
     @staticmethod
@@ -529,7 +529,7 @@ class HexDataFile:
         # let's make sure output dir exists
         outdir = save_opts.get('dir','output')
         if not os.path.isdir(outdir):
-#    #    #    logger.info("creating output dir {}".format(outdir))
+            logger.info("creating output dir {}".format(outdir))
             os.makedirs(outdir)
 
         outname = None
@@ -542,7 +542,7 @@ class HexDataFile:
             save_text_arrays( outname, data, save_opts=save_opts)
 
         if outname is None:
-#    #    #    logger.info("Must choose to save either binary or text files")
+            logger.info("Must choose to save either binary or text files")
             raise Exception("Must choose either text or binary output files")
 
         newFile = klass(outname)
@@ -554,7 +554,7 @@ class HexDataFile:
         
     def get_arrays(self):
         file,ext = os.path.splitext(self.filename)
-#    #    logger.info("file ext for {} is {}".format(self.filename,ext))
+        logger.info("file ext for {} is {}".format(self.filename,ext))
         if ext == '.npz':
             with np.load(self.filename, mmap_mode='r') as data:
                 prime = data['prime']
@@ -566,11 +566,11 @@ class HexDataFile:
         else:
             raise ValueError("unknown input file type with extension {}".format(ext))
 
-#    #    logger.info("loaded values from file={}".format(self.filename))
-#    #    logger.info("loaded values from prime={}".format(prime))
-#    #    logger.info("loaded values from pos={}".format(pos))
-#    #    logger.info("loaded values from spin={}".format(spin))
-#    #    logger.info("loaded values from rot={}".format(rot))
+        logger.info("loaded values from file={}".format(self.filename))
+        logger.info("loaded values from prime={}".format(prime))
+        logger.info("loaded values from pos={}".format(pos))
+        logger.info("loaded values from spin={}".format(spin))
+        logger.info("loaded values from rot={}".format(rot))
         return (prime, pos, spin, rot)
 
     def get_zipped_arrays_iterator(self):
@@ -712,7 +712,7 @@ def main(argv = None):
     #setup_computation_engine(args.use_cython)
 
     if not os.path.isdir(args.dir):
-#    #    logger.info("creating output directory {}".format(args.dir))
+        logger.info("creating output directory {}".format(args.dir))
         os.mkdir(args.dir)
 
     if args.skip != 0 and args.skip != 1:
@@ -731,7 +731,7 @@ def main(argv = None):
     run_opts = { 'nvalues' : args.nvalues,
                  'nchunks' : args.chunks }
     
-#    logger.info("Save options:" + str(save_opts))
+    logger.info("Save options:" + str(save_opts))
 
     hexAssets = HexDataAssets(save_opts)
     if args.find:
