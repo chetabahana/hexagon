@@ -32,4 +32,4 @@ jobs:
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest
-        python primespin.py --nvalues=1701901 --save-text
+        python primespin.py --find 17
