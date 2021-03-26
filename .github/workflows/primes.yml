@@ -2,7 +2,7 @@
 # the polarity of the number, and the prime hexagon's overall rotation.
 #
 # Usage:
-# python primespin.py --nvalues=1701901 --chunks=1000 --save-text
+# python ./primespin.py --nvalues=10000000 --chunks 100 --save-text
 #
 # For more information see: 
 # https://github.com/chetabahana/hexagon#prime-hexagon
@@ -32,5 +32,4 @@ jobs:
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest
-        python primespin.py --nvalues=1701901 --chunks=1000 --save-text
-        PYTHONPATH=. pytest -v --debug tests/test_prime_hex.py
+        python primespin.py --nvalues=1701901 --save-text
