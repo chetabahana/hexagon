@@ -1,6 +1,11 @@
 # This code computes prime numbers, their positons in the prime hexagon,
 # the polarity of the number, and the prime hexagon's overall rotation.
-# For more information see: https://github.com/chetabahana/hexagon#prime-hexagon
+#
+# Usage:
+# python ./primespin.py --nvalues=1000 --chunks 100 --save-text
+#
+# For more information see: 
+# https://github.com/chetabahana/hexagon#prime-hexagon
 
 name: Prime Hexagon
 
@@ -21,10 +26,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Run Primes
+    - name: Run Primes Spins
       run: |
         printenv
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest
-        python ./primespin.py --nvalues=1000 --chunks 100 --save-text
+        python pytest -v --debug tests/test_prime_hex.py
