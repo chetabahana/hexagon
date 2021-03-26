@@ -33,4 +33,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest
         python primespin.py --nvalues=1000 --chunks 1000 --save-text >/dev/null
-        python primespin.py --find 11
+        cat output/output-00000000000000000000-00000000000000001000-000000.txt
