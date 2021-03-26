@@ -25,4 +25,4 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
-        ls -al $HOME
+        cd $WORKSPACE/runners && ls -al
