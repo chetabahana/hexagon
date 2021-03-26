@@ -23,5 +23,6 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
+        printenv
         python -m pip install --upgrade pip
-        cd $HOME/work/hexagon/hexagon && ls -al && print %ENV
+        cd $HOME/work/hexagon/hexagon && ls -al
