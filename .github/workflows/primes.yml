@@ -31,5 +31,5 @@ jobs:
         printenv
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
-        pip install numpy primesieve pytest
-        pytest -v --debug tests/test_prime_hex.py
+        pip install numpy primespin primesieve pytest
+        PYTHONPATH=. pytest -v --debug tests/test_prime_hex.py
