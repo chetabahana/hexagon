@@ -24,4 +24,4 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        cd $HOME/work/hexagon && ls -al
+        cd $HOME/work/hexagon/hexagon && ls -al
