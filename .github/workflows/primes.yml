@@ -33,4 +33,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest > /dev/null 2>&1
         python primespin.py --nvalues=100 --chunks 1 --save-text > /dev/null 2>&1
-        python primespin.py --viewvalues=:: --infile output output/*.txt
+        python primespin.py --viewvalues=:: --infile output/*.txt
