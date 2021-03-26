@@ -1,31 +1,36 @@
-# This workflow will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+# This code computes prime numbers, their positons in the prime hexagon,
+# the polarity of the number, and the prime hexagon's overall rotation.
+#
+# Usage:
+# python ./primespin.py --nvalues=10000000 --chunks 100 --save-text
+#
+# For more information see: 
+# https://github.com/chetabahana/hexagon#prime-hexagon
 
-name: Upload Python Package
+name: Prime Hexagon
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - '*'
+      - '!master'
+      - '!backup'
+      - '!Chetabahana'
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Install dependencies
+    - name: Run Primes Spins
       run: |
+        printenv
+        cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
+        pip install numpy primesieve pytest > /dev/null 2>&1
+        python primespin.py --nvalues=170191 --skip=1 --save-text > /dev/null 2>&1
+        cat output/*.txt
