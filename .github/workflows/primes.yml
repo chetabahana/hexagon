@@ -31,5 +31,5 @@ jobs:
         printenv
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
-        pip install numpy primesieve pytest
+        pip install numpy primesieve pytest > /dev/null 2>&1
         python primespin.py --nvalues=1000 --chunks 1000 --save-text > /dev/null 2>&1
