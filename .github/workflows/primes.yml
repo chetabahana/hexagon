@@ -32,5 +32,5 @@ jobs:
         cd $GITHUB_WORKSPACE && ls -al
         python -m pip install --upgrade pip
         pip install numpy primesieve pytest > /dev/null 2>&1
-        python primespin.py --nvalues=1 --chunks 100 --save-text > /dev/null 2>&1
+        python primespin.py --nvalues=100 --chunks 100 --save-text > /dev/null 2>&1
         cat output/*.txt
